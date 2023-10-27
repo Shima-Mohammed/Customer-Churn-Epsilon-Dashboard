@@ -100,11 +100,11 @@ AvgMonthlyGBDownload_NumberofDependents_fig = px.scatter(df
                                                  , x='AvgMonthlyGBDownload'
                                                  , title='Is the gigabyte affected by an increase in the number of dependents?'
                                                  )
-############AvgMonthlyLongDistanceCharges_NumberofDependents
-AvgMonthlyLongDistanceCharges_NumberofDependents_fig = px.scatter(df
+############MonthlyCharge_NumberofDependents
+MonthlyCharge_NumberofDependents_fig = px.scatter(df
                                                  , y='NumberofDependents' 
-                                                 , x='AvgMonthlyLongDistanceCharges'
-                                                 , title='Is the average monthly long distance charges affected by an increase in the number of dependents?'
+                                                 , x='MonthlyCharge'
+                                                 , title='Is the average monthly charges affected by an increase in the number of dependents?'
                                                  )
 ############Age_NumberofDependents
 Age_NumberofDependents_fig = px.scatter(df
@@ -206,34 +206,60 @@ TenureinMonths_CustomerStatus_fig = ff.create_distplot([TenureinMonths_Stayed_da
                                             , Customer_Status
                                             ,show_hist=False)
 TenureinMonths_CustomerStatus_fig.update_layout(title_text='Tenure in Months distribution of stayed and churned people')
+############# MonthlyCharge_CustomerStatus
+MonthlyCharge_Stayed_data = df[df['CustomerStatus'] == 'Stayed']['MonthlyCharge'].tolist()
+MonthlyCharge_Churned_data = df[df['CustomerStatus'] == 'Churned']['MonthlyCharge'].tolist()
+Customer_Status = ['Stayed','Churned']
+MonthlyCharge_CustomerStatus_fig = ff.create_distplot([MonthlyCharge_Stayed_data,MonthlyCharge_Churned_data]
+                                            , Customer_Status
+                                            ,show_hist=False)
+MonthlyCharge_CustomerStatus_fig.update_layout(title_text='Monthly Charge distribution of stayed and churned people')
 ############TotalRevenue_AvgMonthlyGBDownload
 TotalRevenue_AvgMonthlyGBDownload_fig = px.scatter(df
                                                  , x='AvgMonthlyGBDownload' 
                                                  , y='TotalRevenue'
                                                  , title='Are profits affected by an increase in the Avg Monthly GB Download?'
                                                  )
+############################################### MonthlyCharge ###################################
+######### Contract_MonthlyCharge
+Contract_MonthlyCharge_group = df.groupby(by=["Contract"])['MonthlyCharge'].sum().reset_index(name="MonthlyCharge")
+Contract_MonthlyCharge_fig = px.bar(data_frame=Contract_MonthlyCharge_group
+                                    , x="Contract"
+                                    , y="MonthlyCharge"
+                                    , color = 'MonthlyCharge'
+                                    ,title='Which contract has the highest monthly charge?')
+######### offer_MonthlyCharge
+offer_MonthlyCharge_group = df.groupby(by=["Offer"])['MonthlyCharge'].sum().reset_index(name="MonthlyCharge")
+offer_MonthlyCharge_fig = px.bar(data_frame=offer_MonthlyCharge_group
+                                    , x="Offer"
+                                    , y="MonthlyCharge"
+                                    , color = 'MonthlyCharge'
+                                    ,title='Which offer has the highest monthly charge?')
+######### AvgMonthlyGBDownload_MonthlyCharge
+AvgMonthlyGBDownload_MonthlyCharge_fig = px.scatter(df
+                                                 , x='AvgMonthlyGBDownload' 
+                                                 , y='MonthlyCharge'
+                                                 , title='Are monthly charge affected by an increase in the Avg Monthly GB Download?'
+                                                 )#,trendline="ols"
+######### InternetType_MonthlyCharge
+InternetType_MonthlyCharge_group = df.groupby(by=["InternetType"])['MonthlyCharge'].sum().reset_index(name="MonthlyCharge")
+InternetType_MonthlyCharge_fig = px.bar(data_frame=InternetType_MonthlyCharge_group
+                                    , x="InternetType"
+                                    , y="MonthlyCharge"
+                                    , color = 'MonthlyCharge'
+                                    ,title='Which Internet Type has the highest monthly charge?')
+######### MultipleLines_MonthlyCharge
+MultipleLines_MonthlyCharge_group = df.groupby(by=["MultipleLines"])['MonthlyCharge'].sum().reset_index(name="MonthlyCharge")
+MultipleLines_MonthlyCharge_fig = px.bar(MultipleLines_MonthlyCharge_group
+                                                 , x='MultipleLines' 
+                                                 , y='MonthlyCharge'
+                                                 , color='MonthlyCharge'
+                                                 , title='Are monthly charge affected by an increase in the Multiple Lines?'
+                                                 )
 
 ########### heatmap_corr
-# df_corr = df.corr() # Generate correlation matrix
-
-# heatmap_corr_fig = go.Figure()
-# heatmap_corr_figure = heatmap_corr_fig.add_trace(
-#     go.Heatmap(
-#         x = df_corr.columns,
-#         y = df_corr.index,
-#         z = np.array(df_corr)
-#     )
-# )
-# ######TenureinMonths_CustomerStatus
-# df_TenureinMonths_CustomerStatus_group = df.groupby(by=["CustomerStatus",'TenureinMonths']).size().reset_index(name="counts")
-# TenureinMonths_CustomerStatus_fig = px.bar(df_TenureinMonths_CustomerStatus_group
-#                            , x="TenureinMonths"
-#                            , y="CustomerStatus"
-#                            , color="CustomerStatus"
-#                            , barmode="group"
-#                            , category_orders = {"CustomerStatus": ["Stayed", "Churned"]}
-#                            , title='')
-
+heatmap_corr_figure = px.imshow(df[['Age', 'NumberofDependents', 'NumberofReferrals', 'TenureinMonths',
+       'AvgMonthlyGBDownload', 'MonthlyCharge', 'TotalRevenue']].corr(), text_auto=True)
 ############# dash component ###########
 ######## collapse ######
 def collapse(title,id_names,graphs,WD):
@@ -275,16 +301,23 @@ layout = html.Div([
             ),
         dbc.Col(
             collapse('Number of Dependents'
-                     ,['Married_NumberofDependents_fig','TotalRevenue_NumberofDependents_fig','AvgMonthlyGBDownload_NumberofDependents_fig','AvgMonthlyLongDistanceCharges_NumberofDependents_fig','Age_NumberofDependents_fig','status_NumberofDependents_fig']
-                     ,[Married_NumberofDependents_fig,TotalRevenue_NumberofDependents_fig,AvgMonthlyGBDownload_NumberofDependents_fig,AvgMonthlyLongDistanceCharges_NumberofDependents_fig,Age_NumberofDependents_fig,status_NumberofDependents_fig]
+                     ,['Married_NumberofDependents_fig','TotalRevenue_NumberofDependents_fig','AvgMonthlyGBDownload_NumberofDependents_fig','MonthlyCharge_NumberofDependents_fig','Age_NumberofDependents_fig','status_NumberofDependents_fig']
+                     ,[Married_NumberofDependents_fig,TotalRevenue_NumberofDependents_fig,AvgMonthlyGBDownload_NumberofDependents_fig,MonthlyCharge_NumberofDependents_fig,Age_NumberofDependents_fig,status_NumberofDependents_fig]
                      ,[5,7,5,7,5,7]
                      ), lg=12,md=12,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}
             ),
         dbc.Col(
             collapse('Customer Status'
-                     ,['Contract_CustomerStatus_fig','PaymentMethod_CustomerStatus_fig','PhoneService_CustomerStatus_fig','InternetService_CustomerStatus_fig','InternetType_CustomerStatus_fig','Age_CustomerStatus_fig','NumberofReferrals_CustomerStatus_fig','TotalRevenue_CustomerStatus_fig','TenureinMonths_CustomerStatus_fig','TotalRevenue_AvgMonthlyGBDownload_fig']
-                     ,[Contract_CustomerStatus_fig,PaymentMethod_CustomerStatus_fig,PhoneService_CustomerStatus_fig,InternetService_CustomerStatus_fig,InternetType_CustomerStatus_fig,Age_CustomerStatus_fig,NumberofReferrals_CustomerStatus_fig,TotalRevenue_CustomerStatus_fig,TenureinMonths_CustomerStatus_fig,TotalRevenue_AvgMonthlyGBDownload_fig]
-                     ,[12,12,12,12,12,12,12,12,12,12]
+                     ,['Contract_CustomerStatus_fig','PaymentMethod_CustomerStatus_fig','PhoneService_CustomerStatus_fig','InternetService_CustomerStatus_fig','InternetType_CustomerStatus_fig','Age_CustomerStatus_fig','NumberofReferrals_CustomerStatus_fig','TotalRevenue_CustomerStatus_fig','TenureinMonths_CustomerStatus_fig','MonthlyCharge_CustomerStatus_fig','TotalRevenue_AvgMonthlyGBDownload_fig']
+                     ,[Contract_CustomerStatus_fig,PaymentMethod_CustomerStatus_fig,PhoneService_CustomerStatus_fig,InternetService_CustomerStatus_fig,InternetType_CustomerStatus_fig,Age_CustomerStatus_fig,NumberofReferrals_CustomerStatus_fig,TotalRevenue_CustomerStatus_fig,TenureinMonths_CustomerStatus_fig,MonthlyCharge_CustomerStatus_fig,TotalRevenue_AvgMonthlyGBDownload_fig]
+                     ,[12,12,12,12,12,12,12,12,12,12,12]
+                     ), lg=12,md=12,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}
+            ),
+        dbc.Col(
+            collapse('Monthly Charge'
+                     ,['Contract_MonthlyCharge_fig','offer_MonthlyCharge_fig','AvgMonthlyGBDownload_MonthlyCharge_fig','InternetType_MonthlyCharge_fig','MultipleLines_MonthlyCharge_fig','heatmap_corr_figure']
+                     ,[Contract_MonthlyCharge_fig,offer_MonthlyCharge_fig,AvgMonthlyGBDownload_MonthlyCharge_fig,InternetType_MonthlyCharge_fig,MultipleLines_MonthlyCharge_fig,heatmap_corr_figure]
+                     ,[12,12,12,12,12,12]
                      ), lg=12,md=12,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}
             ),
 
