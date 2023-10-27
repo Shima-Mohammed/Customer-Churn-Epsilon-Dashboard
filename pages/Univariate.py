@@ -77,8 +77,8 @@ df_PaymentMethod_group = df.groupby(by=["PaymentMethod"]).size().reset_index(nam
 PaymentMethod_bar = px.bar(data_frame=df_PaymentMethod_group, x="PaymentMethod", y="counts",color='counts',title='Payment Method')
 ####### TotalRevenue #########
 TotalRevenue_hist = px.histogram(df, x="TotalRevenue",title='Total Revenue')
-######### AvgMonthlyLongDistanceCharges ############
-AvgMonthlyLongDistanceCharges_hist = px.histogram(df, x="AvgMonthlyLongDistanceCharges",title='Avg Monthly Long Distance Charges')
+######### MonthlyCharge ############
+MonthlyCharge_hist = px.histogram(df, x="MonthlyCharge",title='Monthly Charge')
 ######### AvgMonthlyGBDownload #########
 AvgMonthlyGBDownload_hist = px.histogram(df, x="AvgMonthlyGBDownload")
 ######## CustomerStatus #########
@@ -101,7 +101,7 @@ layout = html.Div([
         dbc.Col(dcc.Graph(id='offer_pie',figure=offer_pie), lg=4,md=6,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) ,
         dbc.Col(dcc.Graph(id='TenureinMonths_hist',figure=TenureinMonths_hist), lg=8,md=6,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}),
         dbc.Col(dcc.Graph(id='age_hist',figure=age_hist), lg=4,md=6,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) , 
-        dbc.Col(dcc.Graph(id='AvgMonthlyLongDistanceCharges_hist',figure=AvgMonthlyLongDistanceCharges_hist), lg=12,md=12,sm=1,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) ,
+        dbc.Col(dcc.Graph(id='MonthlyCharge_hist',figure=MonthlyCharge_hist), lg=12,md=12,sm=1,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) ,
         dbc.Col(dcc.Graph(id='AvgMonthlyGBDownload_hist',figure=AvgMonthlyGBDownload_hist), lg=12,md=12,sm=12,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) ,
         dbc.Col(dcc.Graph(id='PhoneService_pie',figure=PhoneService_pie), lg=4,md=6,sm=1,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) ,
         dbc.Col(dcc.Graph(id='MultipleLines_pie',figure=MultipleLines_pie), lg=3,md=6,sm=1,style={'margin-bottom':'15px','box-shadow':'2px 2px 5px rgba(239, 239, 240,0.8)'}) ,
