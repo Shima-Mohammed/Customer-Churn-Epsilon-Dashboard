@@ -3,8 +3,7 @@ from dash import Dash, dcc, html, Input, Output
 import dash_bootstrap_components as dbc
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP],use_pages=True)
-
-
+server = app.server
 ################# dash component ###############
 ############# NavBar #############
 navbar = dbc.NavbarSimple(
