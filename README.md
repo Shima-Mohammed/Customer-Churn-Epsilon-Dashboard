@@ -23,7 +23,7 @@ To run the project
 this deployment project is based on paython version 3.8.8.
 
 ```bash
-  cd deployment 
+  cd dashboard 
   pip install -r requirements.txt
 
 ```
